@@ -29,8 +29,7 @@ describe('POST /todos', () => {
 				expect(res.body.text).toEqual(text)
 			})
 			.end((err, res) => {
-				if (err)
-				{
+				if (err){
 					console.error(err);
 					return done(err);
 				}
