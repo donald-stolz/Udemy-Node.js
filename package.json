@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+	"start": "node server/server.js",
     "test": "jest",
     "test-watch": "nodemon --exec 'yarn test'"
   },
@@ -19,5 +20,8 @@
     "express": "^4.16.3",
     "mongodb": "^3.1.6",
     "mongoose": "^5.3.3"
+  },
+  "engines": {
+	  "node": "10.11.0"
   }
 }
