@@ -10,7 +10,9 @@ const todos = [
 	},
 	{
 		_id: new ObjectID,
-		text: 'Test todo 2'
+		text: 'Test todo 2',
+		completed: true,
+		completedAt: 333
 	}
 ]
 
@@ -102,5 +104,81 @@ describe('POST /todos', () => {
 			.get('/todos/0123456789abc')
 			.expect(404)
 			.end(done);
+	});
+});
+
+describe('DELETE /todos/:id', () => {
+	it('Should remove a todo', (done) => {
+		var hexID = todos[1]._id.toHexString();
+
+		request(app)
+			.delete(`/todos/${hexID}`)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo._id).toEqual(hexID);
+			}).end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+				Todo.findById(hexID).then((todo) => {
+					expect(todo).toBeNull();
+					done();
+				}).catch((err) => done(err))
+			})
+	});
+
+	it('Should return 404 if todo not found', (done) => {
+		var id = new ObjectID;
+		request(app)
+			.delete(`/todos/${id.toHexString()}`)
+			.expect(404)
+			.end(done);
+	});
+
+	it('Should return 404 if object id is invalid', (done) => {
+		request(app)
+			.delete('/todos/0123456789abc')
+			.expect(404)
+			.end(done);
+	});
+});
+
+describe('PATCH /todos/:id', (done) => {
+	it('Should update the todo', (done) => {
+		const id = todos[0]._id.toHexString();
+		var text = 'This is brand new text!';
+
+		request(app)
+			.patch(`todos/${id}`)
+			.send({
+				completed: true,
+				text
+			})
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo.text).toEqual(text);
+				expect(res.body.todo.completed).toBe(true);
+				expect(res.body.todo.completedAt).toBeTruthy();
+			})
+			.end(done)
+	});
+
+	it('Should clear completedAt when todo is not completed', (done) => {
+		const id = todos[1]._id.toHexString();
+		var text = 'This is brand new text!';
+
+		request(app)
+			.patch(`todos/${id}`)
+			.send({
+				completed: false,
+				text
+			})
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo.text).toEqual(text);
+				expect(res.body.todo.completed).toBe(false);
+				expect(res.body.todo.completedAt).toBeFalsy();
+			})
+			.end(done)
 	});
 });
