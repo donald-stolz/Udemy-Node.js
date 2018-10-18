@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000
 
 app.use(bodyParser.json());
 
+// POST /todos
 app.post('/todos', (req, res) => {
 	var todo = new Todo({
 		text: req.body.text
@@ -80,6 +81,19 @@ app.patch('/todos/:id', (req, res) => {
 	Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
 		res.send({todo});
 	}).catch((err) => res.status(400).send())
+});
+
+//POST /users
+app.post('/users', (req, res) => {
+	var user = new User(_.pick(req.body, ['name', 'age', 'email']));
+
+	user.save().then((doc) => {
+		res.send(doc);
+		console.log('Added doc to db');
+	}, (err) => {
+		res.status(400).send(err);
+		console.error(err);
+	});
 });
 
 app.listen(port, () => {
