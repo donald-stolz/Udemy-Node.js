@@ -29,7 +29,7 @@ var UserSchema = new mongoose.Schema({
 		required: true,
 		minlength: 6,
 	},
-	token: [{
+	tokens: [{
 		access: {
 			type: String,
 			required: true
