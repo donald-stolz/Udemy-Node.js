@@ -85,7 +85,7 @@ app.patch('/todos/:id', (req, res) => {
 
 //POST /users
 app.post('/users', (req, res) => {
-	var user = new User(_.pick(req.body, ['name', 'age', 'email']));
+	var user = new User(_.pick(req.body, ['name', 'age', 'email', 'password']));
 
 	user.save().then(() => {
 		return user.generateAuthToken();
