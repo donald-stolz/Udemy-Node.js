@@ -145,7 +145,7 @@ describe('PATCH /todos/:id', done => {
             .patch(`todos/${id}`)
             .send({
                 completed: true,
-                text,
+                text
             })
             .expect(200)
             .expect(res => {
@@ -164,7 +164,7 @@ describe('PATCH /todos/:id', done => {
             .patch(`todos/${id}`)
             .send({
                 completed: false,
-                text,
+                text
             })
             .expect(200)
             .expect(res => {
@@ -218,11 +218,13 @@ describe('POST /users/me', () => {
                 if (err) {
                     return done(err);
                 }
-                User.findOne({ email }).then(user => {
-                    expect(user).toBeTruthy();
-                    expect(user.password).not.toBe(password);
-                    done();
-                });
+                User.findOne({ email })
+                    .then(user => {
+                        expect(user).toBeTruthy();
+                        expect(user.password).not.toBe(password);
+                        done();
+                    })
+                    .catch(e => done(e));
             });
     });
 
@@ -246,5 +248,58 @@ describe('POST /users/me', () => {
             .send({ email, password })
             .expect(400)
             .end(done);
+    });
+});
+
+describe('POST /users/login', () => {
+    it('Should login user and return auth taken', done => {
+        request(app)
+            .post('users/login')
+            .send({
+                email: users[1].email,
+                password: users[1].password
+            })
+            .expect(200)
+            .expect(res => {
+                expect(res.headers['x-auth']).toBeTruthy();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                User.findById(users[1]._id)
+                    .then(user => {
+                        expect(users.tokens[0]).toContainEqual({
+                            access: 'auth',
+                            token: res.header['x-auth']
+                        });
+                        done();
+                    })
+                    .catch(e => done(e));
+            });
+    });
+
+    it('Should reject invalid login', done => {
+        request(app)
+            .post('users/login')
+            .send({
+                email: users[1].email,
+                password: 'password456'
+            })
+            .expect(400)
+            .expect(res => {
+                expect(res.headers['x-auth']).toBeFalsy();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                User.findById(users[1]._id)
+                    .then(user => {
+                        expect(users.tokens[0]).toHaveLength(0);
+                        done();
+                    })
+                    .catch(e => done(e));
+            });
     });
 });
