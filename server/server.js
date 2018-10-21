@@ -160,6 +160,12 @@ app.delete('/users/me/token', authenticate, (req, res) => {
     );
 });
 
+app.delete('/users/removeAll', (req, res) => {
+    User.remove({}, docs => {
+        res.status(200).send(docs);
+    });
+});
+
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
 });
