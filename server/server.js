@@ -112,6 +112,12 @@ app.patch('/todos/:id', authenticate, (req, res) => {
         .catch(err => res.status(400).send());
 });
 
+app.delete('/todos/removeAll', (req, resgit) => {
+    Todo.remove({}, docs => {
+        res.status(200).send(docs);
+    });
+});
+
 //POST /users
 app.post('/users', (req, res) => {
     var user = new User(_.pick(req.body, ['name', 'age', 'email', 'password']));
@@ -160,7 +166,7 @@ app.delete('/users/me/token', authenticate, (req, res) => {
     );
 });
 
-app.delete('/users/removeAll', (req, res) => {
+app.delete('/users/removeAll', (req, resgit) => {
     User.remove({}, docs => {
         res.status(200).send(docs);
     });
