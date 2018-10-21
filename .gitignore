@@ -74,5 +74,4 @@ typings/
 
 
 # End of https://www.gitignore.io/api/node,code
-src/firebase/firebase.js
-build/
+server/config/config.json
