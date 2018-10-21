@@ -28,12 +28,15 @@ const users = [
         age: 22,
         _id: user1_id,
         email: 'dstolz@email.com',
-        password: 'abc123',
+        password: 'abcd123',
         tokens: [
             {
                 access: 'auth',
                 token: jwt
-                    .sign({ _id: user1_id, access: 'auth' }, 'abc123')
+                    .sign(
+                        { _id: user1_id, access: 'auth' },
+                        process.env.JWT_SECRET
+                    )
                     .toString()
             }
         ]
@@ -48,7 +51,10 @@ const users = [
             {
                 access: 'auth',
                 token: jwt
-                    .sign({ _id: user2_id, access: 'auth' }, 'abc123')
+                    .sign(
+                        { _id: user2_id, access: 'auth' },
+                        process.env.JWT_SECRET
+                    )
                     .toString()
             }
         ]
