@@ -74,4 +74,4 @@ typings/
 
 
 # End of https://www.gitignore.io/api/node,code
-server/config/config.json
+config.json
