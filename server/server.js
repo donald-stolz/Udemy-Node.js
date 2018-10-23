@@ -15,10 +15,11 @@ app.use(express.static(publicPath));
 io.on('connection', socket => {
     console.log('New user connected');
 
-    socket.on('createMessage', message => {
+    socket.on('createMessage', (message, callback) => {
         console.log('New message created:');
         console.log(message);
         io.emit('newMessage', generateMessage(message.from, message.text));
+        callback();
     });
 
     socket.emit('newMessage', generateMessage('Admin', 'Welcome!'));
