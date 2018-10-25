@@ -16,10 +16,8 @@ io.on('connection', socket => {
     console.log('New user connected');
 
     socket.on('createMessage', (message, callback) => {
-        console.log('New message created:');
-        console.log(message);
         io.emit('newMessage', generateMessage(message.from, message.text));
-        callback();
+        callback('Message Sent');
     });
 
     socket.emit('newMessage', generateMessage('Admin', 'Welcome!'));
