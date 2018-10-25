@@ -3,7 +3,10 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const { generateMessage } = require('./utils/messages');
+const {
+    generateMessage,
+    generateLocationMessage
+} = require('./utils/messages');
 const port = process.env.PORT || 3000;
 const app = express();
 const publicPath = path.join(__dirname, '../public');
@@ -22,10 +25,16 @@ io.on('connection', socket => {
 
     socket.emit('newMessage', generateMessage('Admin', 'Welcome!'));
 
-    socket.broadcast.emit(
-        'newMessage',
-        generateMessage('Admin', 'New user joined chat')
-    );
+    socket.on('createLocationMessage', coords => {
+        io.emit(
+            'newLocationMessage',
+            generateLocationMessage(
+                'Geoservice',
+                coords.latitude,
+                coords.longitude
+            )
+        );
+    });
 
     socket.on('disconnect', socket => {
         console.log('User disconnected');
