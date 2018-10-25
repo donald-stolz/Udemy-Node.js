@@ -4,8 +4,8 @@
     "description": "Work done for [The Complete Node.js Developer Course](https://www.udemy.com/the-complete-nodejs-developer-course-2/)",
     "main": "index.js",
     "scripts": {
-		"start": "node server/server.js",
-		"start-watch": "nodemon --exec 'yarn run start' ",
+        "start": "node server/server.js",
+        "start-watch": "nodemon --exec 'yarn run start' ",
         "test": "jest",
         "test-watch": "nodemon --exec 'yarn test'"
     },
@@ -21,6 +21,7 @@
     "homepage": "https://github.com/donald-stolz/Udemy-Node.js#readme",
     "dependencies": {
         "express": "^4.16.4",
+        "moment": "^2.22.2",
         "socket.io": "^2.1.1"
     },
     "engines": {
