@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const { isRealString } = require('./utils/validators');
 const {
     generateMessage,
     generateLocationMessage
@@ -18,12 +19,30 @@ app.use(express.static(publicPath));
 io.on('connection', socket => {
     console.log('New user connected');
 
+    socket.on('join', (params, callback) => {
+        const { name, room } = params;
+        if (!isRealString(name) || !isRealString(room)) {
+            callback('Name and room name are required');
+        }
+
+        socket.emit('newMessage', generateMessage('Admin', 'Welcome'));
+        socket.join(room);
+        socket
+            .to(room)
+            .emit(
+                'newMessage',
+                generateMessage('Admin', `${name} joined the chat.`)
+            );
+
+        // socket.to(room).send('newMessage', generateMessage('admin', `Welcome`));
+
+        callback();
+    });
+
     socket.on('createMessage', (message, callback) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
         callback('Message Sent');
     });
-
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome!'));
 
     socket.on('createLocationMessage', coords => {
         io.emit(
